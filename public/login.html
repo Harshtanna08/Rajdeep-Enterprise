@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login & Registration | Rajdeep Enterprise</title>
+    <meta name="description" content="Sign in or create a customer account at Rajdeep Enterprise for appliance quotations, offers, and fast showroom support.">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Simplified Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div>
+                <span>Official Customer Portal | <strong>Rajdeep Enterprise</strong> Mundra, Gujarat</span>
+            </div>
+            <div>
+                <a href="/" class="top-link">← Return to Storefront</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Auth Form -->
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <!-- Brand Logo -->
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <a href="/" style="display:inline-flex; align-items:center; gap:0.75rem; text-decoration:none;">
+                    <div class="logo-img-wrapper" style="width:58px; height:58px; margin: 0 auto;">
+                        <img src="assets/images/Logo.jpeg" alt="Rajdeep Enterprise Logo">
+                    </div>
+                </a>
+                <h2 style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--text-main); margin-top:0.75rem;">
+                    Rajdeep Enterprise
+                </h2>
+                <p style="font-size:0.88rem; color:var(--text-muted);">
+                    Mundra's Trusted Destination for Home Appliances
+                </p>
+            </div>
+
+            <!-- Tabs: Sign In / Register -->
+            <div class="auth-tabs">
+                <button type="button" id="tabBtnSignIn" class="auth-tab-btn active">Sign In</button>
+                <button type="button" id="tabBtnRegister" class="auth-tab-btn">Create Account</button>
+            </div>
+
+            <!-- Customer Sign In Form -->
+            <form id="formUserSignIn">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="loginIdentifier" class="form-label">Mobile Number or Email *</label>
+                    <input type="text" id="loginIdentifier" class="form-control" placeholder="e.g. 8264276734 or name@gmail.com" required autocomplete="username">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="loginPassword" class="form-label">Password *</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem;">
+                    Sign In to Account
+                </button>
+            </form>
+
+            <!-- Customer Registration Form -->
+            <form id="formUserRegister" style="display: none;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="regName" class="form-label">Full Name *</label>
+                    <input type="text" id="regName" class="form-control" placeholder="e.g. Ramesh Patel" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="regPhone" class="form-label">Mobile Number *</label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="10-digit mobile (e.g. 8264276734)" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="regEmail" class="form-label">Email Address (Optional)</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="e.g. ramesh@gmail.com">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="regCity" class="form-label">City / Delivery Area</label>
+                    <input type="text" id="regCity" class="form-control" placeholder="e.g. Baroi Road, Mundra">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="regPassword" class="form-label">Create Password *</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem;">
+                    Create Account & Continue
+                </button>
+            </form>
+
+            <!-- NO admin link here — completely hidden from public users -->
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Toast helper
+        function showToast(message, type = 'info') {
+            let container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
+            toast.innerHTML = '<span>' + (icons[type] || 'ℹ️') + '</span> <div>' + message + '</div>';
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        const tabBtnSignIn = document.getElementById('tabBtnSignIn');
+        const tabBtnRegister = document.getElementById('tabBtnRegister');
+        const formUserSignIn = document.getElementById('formUserSignIn');
+        const formUserRegister = document.getElementById('formUserRegister');
+
+        tabBtnSignIn.addEventListener('click', () => {
+            tabBtnSignIn.classList.add('active');
+            tabBtnRegister.classList.remove('active');
+            formUserSignIn.style.display = 'block';
+            formUserRegister.style.display = 'none';
+        });
+
+        tabBtnRegister.addEventListener('click', () => {
+            tabBtnRegister.classList.add('active');
+            tabBtnSignIn.classList.remove('active');
+            formUserRegister.style.display = 'block';
+            formUserSignIn.style.display = 'none';
+        });
+
+        // Sign In via API
+        formUserSignIn.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('rajdeep_current_user_v2', JSON.stringify(data.user));
+                    showToast('Welcome back, ' + data.user.name + '!', 'success');
+                    setTimeout(() => { window.location.href = '/'; }, 800);
+                } else {
+                    showToast(data.error, 'error');
+                }
+            } catch (err) {
+                showToast('Connection error. Please try again.', 'error');
+            }
+        });
+
+        // Register via API
+        formUserRegister.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const city = document.getElementById('regCity').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const res = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, email, city, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('rajdeep_current_user_v2', JSON.stringify(data.user));
+                    showToast('Account created successfully! Welcome, ' + data.user.name + '.', 'success');
+                    setTimeout(() => { window.location.href = '/'; }, 800);
+                } else {
+                    showToast(data.error, 'error');
+                }
+            } catch (err) {
+                showToast('Connection error. Please try again.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

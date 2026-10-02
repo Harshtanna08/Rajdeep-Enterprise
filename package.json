@@ -1,0 +1,23 @@
+{
+  "name": "rajdeep-enterprise",
+  "version": "1.0.0",
+  "description": "Rajdeep Enterprise - Professional Electronics Showroom Website with Secure Admin Portal",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.4.0",
+    "uuid": "^14.0.2"
+  }
+}
